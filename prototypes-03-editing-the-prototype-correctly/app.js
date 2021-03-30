@@ -17,7 +17,7 @@
 //       'Hi, I am ' + this.name + ' and I am ' + this.age + ' years old.'
 //     );
 //   }
-// }
+ }
 
 function Person() {
   this.age = 30;
