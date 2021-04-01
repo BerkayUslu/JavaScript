@@ -14,7 +14,11 @@ class ProjectItemHandler extends ProjectList {
   constructor() {
     super();
   }
-  render() {}
+  render() {
+    for(const pro of this.projects){
+      
+    }
+  }
 }
 
 class ProjectList {
