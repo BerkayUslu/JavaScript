@@ -1,15 +1,15 @@
+'use strict';
 const startGameBtn = document.getElementById('start-game-btn');
 
 const ROCK = "rock";
 const PAPER = "paper";
 const SCISSORS = "scissors";
 
-
 function gameStarter(){
     console.log("GAME STARTING...");
-    let playerMove = prompt("Please enter your chose rock/paper/scissors");
+    let playerMove = prompt("Please enter your chose rock/paper/scissors").toLowerCase();
     while((playerMove.trim() === "") || ((playerMove.trim()!==ROCK) & (playerMove.trim() !==PAPER) && (playerMove.trim() !== SCISSORS)) ){
-        playerMove = prompt("Wrong move please write again. It shoul be like rock/paper/scissors");
+        playerMove = prompt("Wrong move please write again. It shoul be like rock/paper/scissors").toLowerCase();
     }
     console.log("Your move : " + playerMove);
     const choiceOfPc = choiceMaker();
