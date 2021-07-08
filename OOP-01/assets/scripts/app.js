@@ -12,8 +12,10 @@ class DOMhandler {
     element.replaceWith(clonedElement);
     return clonedElement;
   }
-  static updateInfoBtn(infButtonDOM, func, project, text) {
-    infButtonDOM.addEventListener('click', func.bind(null, text, project));
+  static updateInfoBtn(infButtonDOM, func, oldFunc, newFunc) {
+    console.log(newFunc);
+    console.log(oldFunc);
+    infButtonDOM.addEventListener('click', func.bind(null, newFunc, oldFunc));
   }
   static clearInfoButton(element) {
     const clonedElement = element.cloneNode(true);
@@ -23,40 +25,45 @@ class DOMhandler {
 }
 
 class Components {
-  constructor(){}
-  detaca() {}
-  attacha() {
+  constructor() {}
+  detach() {
+    this.exInfElement.remove();
+  }
+  attach() {
+    this.projectElement.parentNode.insertBefore(
+      this.infoCardElement,
+      this.projectElement.nextSibling
+    );
   }
 }
-class Info extends Components{
-  constructor() {
+class Info extends Components {
+  constructor(projectElement) {
     super();
+    this.projectElement = projectElement;
+    this.buttonDOM = projectElement.querySelector('button:first-of-type');
+    this.exInfoText = this.projectElement.dataset.extraInfo;
+    this.createInfoElement();
+    this.render(this.attach.bind(this), this.detach.bind(this)); //bind dene
+    this.exInfElement = this.projectElement.nextElementSibling;
   }
-  detach(text, project) {
-    const exInfCard = project.nextElementSibling;
-    exInfCard.remove();
-    this.buttonDOM = project.querySelector('button:first-of-type');
+  update(oldFunc, newFunc) {
     this.buttonDOM = DOMhandler.clearInfoButton(this.buttonDOM);
     DOMhandler.updateInfoBtn(
       this.buttonDOM,
-      this.attach.bind(this),
-      project,
-      text
+      this.render.bind(this),
+      oldFunc,
+      newFunc
     );
   }
-  attach(text, project) {
-    const infoElement = document.createElement('div');
-    infoElement.className = 'card';
-    infoElement.innerHTML = `<h5>${text}</h5>`;
-    project.parentNode.insertBefore(infoElement, project.nextSibling);
-    this.buttonDOM = project.querySelector('button:first-of-type');
-    this.buttonDOM = DOMhandler.clearInfoButton(this.buttonDOM);
-    DOMhandler.updateInfoBtn(
-      this.buttonDOM,
-      this.detach.bind(this),
-      project,
-      text
-    );
+  render(funcToDo, newFunc) {
+    funcToDo();
+    console.log(newFunc);
+    this.update(funcToDo, newFunc);
+  }
+  createInfoElement() {
+    this.infoCardElement = document.createElement('div');
+    this.infoCardElement.className = 'card';
+    this.infoCardElement.innerHTML = `<h5>${this.exInfoText}</h5>`;
   }
 }
 
@@ -79,9 +86,7 @@ class Project {
     ); //buraya bulunduğu listeye gidip elementi kaldıracak bir fonksiyon gerek
   }
   infoHandler() {
-    const text = this.projectDom.dataset.extraInfo;
-    const info = new Info();
-    info.attach(text, this.projectDom);
+    new Info(this.projectDom);
   }
   moreInfoButtonActivate() {
     this.infoButtonDom.addEventListener('click', this.infoHandler.bind(this));
